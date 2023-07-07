@@ -1,7 +1,9 @@
 name: Playwright-Android Tests
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
     
 env:
   ANDROID_ARCH: x86_64
@@ -16,22 +18,31 @@ jobs:
   playwright-emulator:
     timeout-minutes: 20
     
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     
     steps:
       - uses: actions/checkout@v3
-        
-      - name: Add avdmanager and sdkmanager to system PATH
-        run: |
-            echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
       
-      - name: Install Sdk
+      - name: Install Android Studio
         run: |
-           yes Y | sdkmanager --licenses
-           sdkmanager --install ${ANDROID_SDK_PACKAGES}
+          sudo apt-get install openjdk-7-jdk
+          wget http://dl.google.com/android/android-sdk_r24.2-linux.tgz
+          cd android-sdk-linux/tools
+          ./android update sdk --no-ui
+          export PATH=${PATH}:$HOME/Android/Sdk/platform-tools:$HOME/Android/Sdk/tools:$HOME/Android/Sdk/build-tools/23.0.2/
+          sdkmanager --install "system-images;android-33;google_apis;x86_64 platforms;android-33 build-tools;33.0.2 platform-tools emulator"
+        
+#       - name: Add avdmanager and sdkmanager to system PATH
+#         run: |
+#             echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
+      
+#       - name: Install Sdk
+#         run: |
+#            yes Y | sdkmanager --licenses
+#            sdkmanager --install ${ANDROID_SDK_PACKAGES}
   
       - name: Build emulator
         run: |
