@@ -34,6 +34,7 @@ jobs:
       - name: Install JDK
         run: |
           sudo apt install default-jdk
+          sudo apt-get install libpulse0:i386
 #       - name: Install sdk_linux
 #         run: |
 #           wget http://dl.google.com/android/android-sdk_r24.2-linux.tgz
