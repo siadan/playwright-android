@@ -35,6 +35,7 @@ jobs:
         run: |
           sudo apt install default-jdk
           wget http://dl.google.com/android/android-sdk_r24.2-linux.tgz
+          tar -xvf android-sdk_r24.2-linux.tgz
           cd android-sdk-linux/tools
           ./android update sdk --no-ui
           export PATH=${PATH}:$HOME/Android/Sdk/platform-tools:$HOME/Android/Sdk/tools:$HOME/Android/Sdk/build-tools/23.0.2/
