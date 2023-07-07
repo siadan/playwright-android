@@ -64,16 +64,23 @@ jobs:
       - name: Install Sdk
         run: |
            yes Y | sdkmanager --licenses
-           sdkmanager --install ${ANDROID_SDK_PACKAGES}
+           sdkmanager --install "system-images;android-30;google_atd;arm64-v8a"
+           
+      - name: Build emulator ubu
+        run: |
+          echo "no" | avdmanager --verbose create avd --force --name "pixel_5_api30_google_atd_emulator" --package "system-images;android-30;google_atd;arm64-v8a" --tag "google_atd" --abi "arm64-v8a" --device "pixel_5"
   
-      - name: Build emulator
+      - name: Start emulator ubu
         run: |
-            echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
+          emulator @pixel_5_api30_google_atd_emulator &
+#       - name: Build emulator
+#         run: |
+#             echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
         
-      - name: Launch emulator
-        run: |
-          chmod +x ./start_emu_headless.sh
-          EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
+#       - name: Launch emulator
+#         run: |
+#           chmod +x ./start_emu_headless.sh
+#           EMULATOR_TIMEOUT=$EMULATOR_TIMEOUT EMULATOR_NAME=$EMULATOR_NAME ./start_emu_headless.sh
 
       - name: Install dependencies
         run: | 
