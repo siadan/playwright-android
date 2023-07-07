@@ -31,16 +31,20 @@ jobs:
 #           
 
 # 
-      - name: Install Android Studio
+      - name: Install JDK
         run: |
           sudo apt install default-jdk
+      - name: Install sdk_linux
+        run: |
           wget http://dl.google.com/android/android-sdk_r24.2-linux.tgz
           tar -xvf android-sdk_r24.2-linux.tgz
           cd android-sdk-linux/tools
-          ./android update sdk --no-ui
+          yes Y | ./android update sdk --no-ui
+      - name: Install SDK
+        run: |
           export PATH=${PATH}:$HOME/Android/Sdk/platform-tools:$HOME/Android/Sdk/tools:$HOME/Android/Sdk/build-tools/23.0.2/
           sdkmanager --install "system-images;android-33;google_apis;x86_64 platforms;android-33 build-tools;33.0.2 platform-tools emulator"
-        
+          
 #       - name: Add avdmanager and sdkmanager to system PATH
 #         run: |
 #             echo "$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/${{ env.ANDROID_BUILD_TOOLS_VERSION }}" >> $GITHUB_PATH
