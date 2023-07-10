@@ -38,6 +38,14 @@ jobs:
         run: |
           yes Y | sdkmanager --licenses
           sdkmanager --install ${ANDROID_SDK_PACKAGES}
+      
+      - name: Install cli tools
+        run: |
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools-linux-9477386_latest.zip -d cmdline-tools
+          mkdir --parents "$ANDROID_HOME/cmdline-tools/latest"
+          sudo mv cmdline-tools/* "$ANDROID_HOME/cmdline-tools/latest/"
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
           
       - name: Build emulator ubu
         run: |
