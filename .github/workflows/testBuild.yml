@@ -1,0 +1,65 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+env:
+  ANDROID_ARCH: x86_64
+  ANDROID_TARGET: google_apis
+  API_LEVEL: 33
+  ANDROID_BUILD_TOOLS_VERSION: 33.0.2
+  ANDROID_SDK_PACKAGES: system-images;android-33;google_apis;x86_64 platforms;android-33 build-tools;33.0.2 platform-tools emulator
+  EMULATOR_TIMEOUT: 350
+  EMULATOR_NAME: nexus
+
+jobs:
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: "adopt"
+          java-version: "11"
+
+      - name: Setup Android Environment
+        uses: android-actions/setup-android@v2
+
+#       - name: Install Android NDK
+#         run: |
+#           sdkmanager --install "build-tools;33.0.2"
+#           sdkmanager --install "cmake;3.22.1"
+#           sdkmanager --install "ndk;25.0.8775105"
+      - name: Install Packages
+        run: |
+          yes Y | sdkmanager --licenses
+          sdkmanager --install ${ANDROID_SDK_PACKAGES}
+          
+      - name: Build emulator ubu
+        run: |
+          echo "no" | avdmanager --verbose create avd --force -n $EMULATOR_NAME --abi "${ANDROID_TARGET}/${ANDROID_ARCH}" -k "system-images;android-${API_LEVEL};${ANDROID_TARGET};${ANDROID_ARCH}"
+          emulator -list-avds
+          
+      - name: Start emulator ubu
+        run: |
+          emulator @nexus -no-window -no-snapshot -screen no-touch -noaudio -memory 2048 -cache-size 2048 -no-boot-anim -camera-back none -gpu swiftshader_indirect -accel on &
+          adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+          
+      - name: Install dependencies
+        run: | 
+          npm i
+          
+      - name: Execute the test
+        run: | 
+         npm run test
+        
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+         name: playwright-report
+         path: playwright-report/
+         retention-days: 30
