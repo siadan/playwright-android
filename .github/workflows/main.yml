@@ -3,7 +3,7 @@ name: Playwright-Android Tests
 on:
   push:
     branches:
-      - main
+      - main_w
 env:
   ANDROID_ARCH: x86_64
   ANDROID_TARGET: google_apis
