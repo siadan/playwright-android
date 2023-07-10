@@ -58,7 +58,7 @@ jobs:
           
       - name: Start emulator ubu
         run: |
-          emulator @nexus -no-window -no-snapshot -screen no-touch -noaudio -memory 2048 -cache-size 2048 -no-boot-anim -camera-back none -gpu swiftshader_indirect -accel on &
+          emulator @nexus -no-window -no-snapshot -screen no-touch -noaudio -memory 2048 -cache-size 2048 -no-boot-anim -camera-back none -gpu swiftshader_indirect -accel on -log-nofilter &
           adb -s nexus wait-for-any-device
           
       - name: Install dependencies
