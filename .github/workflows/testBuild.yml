@@ -59,7 +59,7 @@ jobs:
       - name: Start emulator ubu
         run: |
           emulator @nexus -no-window -no-snapshot -screen no-touch -noaudio -memory 2048 -cache-size 2048 -no-boot-anim -camera-back none -gpu swiftshader_indirect -accel on &
-          adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; input keyevent 82'
+          adb -s nexus wait-for-any-device
           
       - name: Install dependencies
         run: | 
